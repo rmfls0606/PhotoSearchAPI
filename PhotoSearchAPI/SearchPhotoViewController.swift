@@ -10,6 +10,7 @@ import SnapKit
 import Alamofire
 
 struct SearchResponse: Decodable{
+    let total_pages: Int
     let results: [SearchResult]
 }
 
@@ -42,6 +43,8 @@ class SearchPhotoViewController: UIViewController{
     private var SearchData = [SearchResult]()
     private var query = ""
     private var sortState: SortState = SortState.sortByRelevance
+    private var page = 1
+    private var isEnd = false
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -112,11 +115,12 @@ class SearchPhotoViewController: UIViewController{
         searchResult.configureDelegate(delegate: self, dataSource: self, prefetchDataSource: self)
     }
     
-    private func callRequest(query: String){
+    private func callRequest(query: String, page: Int){
         let url = "https://api.unsplash.com/search/photos?"
         let parameters: [String: Any] = [
             "query": query,
             "per_page": "20",
+            "page": page,
             "order_by": self.sortState.rawValue,
             "client_id": ApiKey.client_ID
         ]
@@ -126,7 +130,13 @@ class SearchPhotoViewController: UIViewController{
                                        parameters: parameters) { (result: Result<SearchResponse, Error>) in
             switch result{
             case .success(let data):
-                self.SearchData = data.results
+                if self.page == 1{
+                    self.SearchData = data.results
+                }else{
+                    self.SearchData.append(contentsOf: data.results)
+                }
+                self.isEnd = page >= data.total_pages
+                
                 self.searchResult.reloadData()
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -138,7 +148,10 @@ class SearchPhotoViewController: UIViewController{
     @objc
     private func toggleButtonTapped(){
         self.sortState.toggle()
-        callRequest(query: query)
+        self.page = 1
+        self.toggleButton.setTitle(self.sortState.rawValue, for: .normal)
+        self.toggleButton.setTitle(self.sortState.rawValue, for: .highlighted)
+        callRequest(query: query, page: 1)
     }
 }
 
@@ -150,7 +163,8 @@ extension SearchPhotoViewController: UISearchBarDelegate{
             return
         }
         self.query = query
-        callRequest(query: query)
+        self.page = 1
+        callRequest(query: query, page: 1)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -182,6 +196,18 @@ extension SearchPhotoViewController: UICollectionViewDelegate, UICollectionViewD
 
 extension SearchPhotoViewController: UICollectionViewDataSourcePrefetching{
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        guard !isEnd else { return }
+        
+        for item in indexPaths{
+            if SearchData.count - 5 <= item.item{
+                self.page += 1
+                callRequest(query: query, page: self.page)
+                break
+            }
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         
     }
     
