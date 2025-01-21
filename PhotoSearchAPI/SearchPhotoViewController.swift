@@ -7,9 +7,28 @@
 
 import UIKit
 import SnapKit
+import Alamofire
+
+struct SearchResponse: Decodable{
+    let results: [SearchResult]
+}
+
+struct SearchResult: Decodable{
+    let id: String
+    let width: Int
+    let height: Int
+    let urls: SearchURLS
+    let likes: Int
+}
+
+struct SearchURLS: Decodable{
+    let thumb: String
+}
 
 class SearchPhotoViewController: UIViewController{
 
+    private var SearchData = [SearchResult]()
+    
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "브랜드, 상품, 프로필, 태그 등"
@@ -25,8 +44,9 @@ class SearchPhotoViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setUp()
+        callRequest(query: "음식")
     }
     
     private func setUp(){
@@ -48,6 +68,27 @@ class SearchPhotoViewController: UIViewController{
         }
         
         searchResult.configureDelegate(delegate: self, dataSource: self, prefetchDataSource: self)
+    }
+    
+    private func callRequest(query: String){
+        let url = "https://api.unsplash.com/search/photos?"
+        let parameters: [String: Any] = [
+            "query": query,
+            "per_page": "20",
+            "client_id": ApiKey.client_ID
+        ]
+        
+        NetworkManager.shared.loadData(url: url,
+                                       method: .get,
+                                       parameters: parameters) { (result: Result<SearchResponse, Error>) in
+            switch result{
+            case .success(let data):
+                self.SearchData = data.results
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+        
     }
 }
 

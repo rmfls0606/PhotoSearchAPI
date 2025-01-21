@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		799012692D3FF40200C9F066 /* ApiKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799012682D3FF40200C9F066 /* ApiKey.swift */; };
+		7990126B2D3FF41A00C9F066 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 7990126A2D3FF41A00C9F066 /* Config.xcconfig */; };
 		79B9177F2D3D23A000CBFB0D /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 79B9177E2D3D23A000CBFB0D /* Kingfisher */; };
 		79B917822D3D23AD00CBFB0D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 79B917812D3D23AD00CBFB0D /* SnapKit */; };
 		79B917852D3D23BF00CBFB0D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 79B917842D3D23BF00CBFB0D /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		799012682D3FF40200C9F066 /* ApiKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKey.swift; sourceTree = "<group>"; };
+		7990126A2D3FF41A00C9F066 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		79B917652D3D22C700CBFB0D /* PhotoSearchAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSearchAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -54,6 +58,8 @@
 		79B9175C2D3D22C700CBFB0D = {
 			isa = PBXGroup;
 			children = (
+				7990126A2D3FF41A00C9F066 /* Config.xcconfig */,
+				799012682D3FF40200C9F066 /* ApiKey.swift */,
 				79B917672D3D22C700CBFB0D /* PhotoSearchAPI */,
 				79B917662D3D22C700CBFB0D /* Products */,
 			);
@@ -139,6 +145,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7990126B2D3FF41A00C9F066 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +156,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				799012692D3FF40200C9F066 /* ApiKey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +227,7 @@
 		};
 		79B9177B2D3D22C900CBFB0D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7990126A2D3FF41A00C9F066 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

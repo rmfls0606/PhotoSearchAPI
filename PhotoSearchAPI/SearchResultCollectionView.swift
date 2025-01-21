@@ -35,13 +35,13 @@ final class SearchResultCollectionView: BaseCollectionViewCell{
         }
         
         starImage.snp.makeConstraints { make in
-            make.leading.equalTo(stackView.snp.leading).offset(5)
-            make.centerY.equalToSuperview()
+//            make.leading.equalTo(stackView.snp.leading).offset(5)
+            make.centerY.equalTo(stackView)
         }
         
         starText.snp.makeConstraints { make in
-            make.trailing.equalTo(stackView.snp.trailing).offset(-5)
-            make.centerY.equalToSuperview()
+//            make.trailing.equalTo(stackView.snp.trailing).offset(-5)
+            make.centerY.equalTo(stackView)
         }
         
         self.stackView.snp.makeConstraints { make in
