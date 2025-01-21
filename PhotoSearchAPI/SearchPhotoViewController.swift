@@ -23,9 +23,25 @@ struct SearchURLS: Decodable{
     let thumb: String
 }
 
+enum SortState: String{
+    case sortByRelevance = "relevant"
+    case sortByLatest = "latest"
+    
+    mutating func toggle(){
+        switch self{
+        case .sortByRelevance:
+            self = .sortByLatest
+        case .sortByLatest:
+            self = .sortByRelevance
+        }
+    }
+}
+
 class SearchPhotoViewController: UIViewController{
 
     private var SearchData = [SearchResult]()
+    private var query = ""
+    private var sortState: SortState = SortState.sortByRelevance
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -56,7 +72,7 @@ class SearchPhotoViewController: UIViewController{
         
         button.configuration = config
         
-        
+        button.addTarget(self, action: #selector(toggleButtonTapped), for: .touchUpInside)
         
         return button
     }()
@@ -101,6 +117,7 @@ class SearchPhotoViewController: UIViewController{
         let parameters: [String: Any] = [
             "query": query,
             "per_page": "20",
+            "order_by": self.sortState.rawValue,
             "client_id": ApiKey.client_ID
         ]
         
@@ -117,6 +134,12 @@ class SearchPhotoViewController: UIViewController{
         }
         
     }
+    
+    @objc
+    private func toggleButtonTapped(){
+        self.sortState.toggle()
+        callRequest(query: query)
+    }
 }
 
 extension SearchPhotoViewController: UISearchBarDelegate{
@@ -126,6 +149,7 @@ extension SearchPhotoViewController: UISearchBarDelegate{
             print("검색 에러")
             return
         }
+        self.query = query
         callRequest(query: query)
     }
     
