@@ -78,18 +78,6 @@ class DetailViewController: UIViewController {
         return view
     }()
     
-//    private lazy var scrollView: UIScrollView = {
-//        let view = UIScrollView(frame: .zero)
-//        view.addSubview(imageView)
-//        view.addSubview(titleLabel)
-//        view.addSubview(mainStackView)
-//        return view
-//    }()
-    
-//    private lazy var outerview: UIStackView = {
-//        let view = UIStackView(arrangedSubviews: [imageView, titleLabel,])
-//    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -100,10 +88,8 @@ class DetailViewController: UIViewController {
     private func setUp(){
         self.view.backgroundColor = .white
         self.view.addSubview(boxView)
-//        self.view.addSubview(scrollView)
         self.view.addSubview(imageView)
-//        self.view.addSubview(titleLabel)
-//        view.addSubview(mainStackView)
+        self.view.addSubview(titleLabel)
         self.sizeLabel.font = .boldSystemFont(ofSize: 14)
         self.viewsLabel.font = .boldSystemFont(ofSize: 14)
         self.downloadsLabel.font = .boldSystemFont(ofSize: 14)
@@ -113,17 +99,11 @@ class DetailViewController: UIViewController {
             make.trailing.equalToSuperview().offset(-12)
             make.leading.equalToSuperview().offset(12)
         }
-//        scrollView.snp.makeConstraints { make in
-//            make.top.equalTo(self.view.safeAreaLayoutGuide)
-//            make.leading.bottom.trailing.equalToSuperview()
-//        }
-        
         imageView.kf.setImage(with: URL(string: item!.urls.small))
         
         imageView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide)
             make.centerX.equalToSuperview()
-//            make.height.equalTo(1000)
         }
         
         titleLabel.snp.makeConstraints { make in
