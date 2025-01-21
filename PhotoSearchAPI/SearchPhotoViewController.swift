@@ -15,8 +15,6 @@ struct SearchResponse: Decodable{
 
 struct SearchResult: Decodable{
     let id: String
-    let width: Int
-    let height: Int
     let urls: SearchURLS
     let likes: Int
 }
@@ -31,7 +29,7 @@ class SearchPhotoViewController: UIViewController{
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        searchBar.placeholder = "브랜드, 상품, 프로필, 태그 등"
+        searchBar.placeholder = "키워드 검색"
         searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: searchBar.placeholder!, attributes: [.foregroundColor: UIColor.lightGray])
         searchBar.searchTextField.textColor = .lightGray
         searchBar.searchTextField.leftView?.tintColor = .lightGray
@@ -40,13 +38,35 @@ class SearchPhotoViewController: UIViewController{
         return searchBar
     }()
     
+    private lazy var toggleButton: UIButton = {
+        let button = UIButton(configuration: .filled())
+        
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = .white
+        config.baseForegroundColor = .black
+        config.cornerStyle = .capsule
+        config.background.strokeColor = .gray
+        config.background.strokeWidth = 1.0
+        
+        config.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+        
+        var title = AttributedString("관련순")
+        title.font = UIFont.systemFont(ofSize: 16)
+        config.attributedTitle = title
+        
+        button.configuration = config
+        
+        
+        
+        return button
+    }()
+    
     private lazy var searchResult = SearchResultView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUp()
-        callRequest(query: "음식")
     }
     
     private func setUp(){
@@ -55,6 +75,7 @@ class SearchPhotoViewController: UIViewController{
         
         self.view.addSubview(searchBar)
         self.view.addSubview(searchResult)
+        self.view.addSubview(toggleButton)
         
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide)
@@ -62,8 +83,13 @@ class SearchPhotoViewController: UIViewController{
             make.trailing.equalToSuperview()
         }
         
+        toggleButton.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom)
+            make.trailing.equalToSuperview().offset(-12)
+        }
+        
         searchResult.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(12)
+            make.top.equalTo(toggleButton.snp.bottom).offset(12)
             make.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -84,6 +110,7 @@ class SearchPhotoViewController: UIViewController{
             switch result{
             case .success(let data):
                 self.SearchData = data.results
+                self.searchResult.reloadData()
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
@@ -92,19 +119,41 @@ class SearchPhotoViewController: UIViewController{
     }
 }
 
-extension SearchPhotoViewController: UISearchBarDelegate, UICollectionViewDelegate, UICollectionViewDataSource{
+extension SearchPhotoViewController: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        guard let query = searchBar.text else{
+            print("검색 에러")
+            return
+        }
+        callRequest(query: query)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        view.endEditing(true)
+        searchBar.showsCancelButton = false
+    }
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.showsCancelButton = true
+        return true
+    }
+}
+
+extension SearchPhotoViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        SearchData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SearchResultCollectionView", for: indexPath) as? SearchResultCollectionView else{
             return UICollectionViewCell()
         }
+        let data = SearchData[indexPath.item]
+        cell.configureData(data: data)
+        
         return cell
     }
-    
-    
 }
 
 extension SearchPhotoViewController: UICollectionViewDataSourcePrefetching{

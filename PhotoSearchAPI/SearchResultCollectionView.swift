@@ -17,79 +17,54 @@ final class SearchResultCollectionView: BaseCollectionViewCell{
     static let identifier = "SearchResultCollectionView"
     
     private lazy var itemImageView = UIImageView()
-    private lazy var starImage = UIImageView()
-    private lazy var starText = UILabel()
-    private lazy var stackView = UIStackView(arrangedSubviews: [starImage, starText])
-    
+    private lazy var starButton = UIButton(configuration: .filled())
     
     override func configureHierarchy() {
         self.contentView.addSubview(itemImageView)
-        self.contentView.addSubview(stackView)
+        self.contentView.addSubview(starButton)
     }
     
     override func configureLayout() {
         self.itemImageView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(self.contentView)
-            make.width.equalTo(self.contentView.snp.width)
-            make.height.equalTo(self.contentView.snp.width)
+            make.top.leading.trailing.bottom.equalTo(self.contentView)
         }
         
-        starImage.snp.makeConstraints { make in
-//            make.leading.equalTo(stackView.snp.leading).offset(5)
-            make.centerY.equalTo(stackView)
-        }
-        
-        starText.snp.makeConstraints { make in
-//            make.trailing.equalTo(stackView.snp.trailing).offset(-5)
-            make.centerY.equalTo(stackView)
-        }
-        
-        self.stackView.snp.makeConstraints { make in
-            make.leading.equalTo(contentView.snp.leading).offset(12)
-            make.bottom.equalTo(contentView.snp.bottom).offset(-12)
-//            make.height.equalTo(40)
+        starButton.snp.makeConstraints { make in
+            make.leading.equalTo(contentView.snp.leading).offset(10)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-10)
         }
     }
     
     override func configureView() {
         
-        self.contentView.backgroundColor = .black
-        
         itemImageView.contentMode = .scaleAspectFill
-        itemImageView.layer.cornerRadius = 10
-        itemImageView.layer.masksToBounds = true
+        itemImageView.clipsToBounds = true
         
-        starImage.image = UIImage(systemName: "star.fill")
-        starImage.tintColor = .yellow
+        starButton.setTitle("", for: .normal)
+        starButton.setTitle("", for: .highlighted)
         
-        starText.text = "fdafdsfdsa"
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = .darkGray
+        config.baseForegroundColor = .white
+        config.cornerStyle = .capsule
+        config.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+        config.imagePadding = 5
         
-        stackView.spacing = 6
-        stackView.axis = .horizontal
-        stackView.layer.cornerRadius = 10
-        stackView.layer.masksToBounds = true
+        let smallImage = UIImage.SymbolConfiguration(pointSize: 14, weight: .regular, scale: .small)
+        let image = UIImage(systemName: "star.fill", withConfiguration: smallImage)?.withTintColor(.yellow, renderingMode: .alwaysOriginal)
+        starButton.setImage(image, for: .normal)
+        starButton.setImage(image, for: .highlighted)
+        
+        var title = AttributedString("")
+        title.font = UIFont.systemFont(ofSize: 14)
+        config.attributedTitle = title
+        
+        starButton.configuration = config
     }
     
-//    func configureData(data: Item){
-//        self.itemImageView.kf.setImage(with: URL(string: data.image))
-//        self.itemTitle.text = data.mallName
-//        self.itemSubTitle.text = data.title.htmlEscaped
-//        let result = Int(data.lprice)?.formatted(.number)
-//        self.itemPrice.text = result
-//        
-//    }
+    func configureData(data: SearchResult){
+        self.itemImageView.kf.setImage(with: URL(string: data.urls.thumb))
+        self.starButton.setTitle("\(data.likes)", for: .normal)
+        self.starButton.setTitle("\(data.likes)", for: .highlighted)
+    }
 }
-
-////정규식으로 html태그 제거
-//extension String {
-//    var htmlEscaped: String {
-//        do {
-//            let regex = try NSRegularExpression(pattern: "<[^>]+>", options: .caseInsensitive)
-//            let range = NSRange(location: 0, length: self.utf16.count)
-//            return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
-//        } catch {
-//            print("Regex error: \(error)")
-//            return self
-//        }
-//    }
-//}
