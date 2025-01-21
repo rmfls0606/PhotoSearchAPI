@@ -149,8 +149,9 @@ class SearchPhotoViewController: UIViewController{
     private func toggleButtonTapped(){
         self.sortState.toggle()
         self.page = 1
-        self.toggleButton.setTitle(self.sortState.rawValue, for: .normal)
-        self.toggleButton.setTitle(self.sortState.rawValue, for: .highlighted)
+        let text = self.sortState == .sortByLatest ? "최신순" : "관련순"
+        self.toggleButton.setTitle(text, for: .normal)
+        self.toggleButton.setTitle(text, for: .highlighted)
         callRequest(query: query, page: 1)
     }
 }

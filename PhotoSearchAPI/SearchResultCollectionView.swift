@@ -63,8 +63,9 @@ final class SearchResultCollectionView: BaseCollectionViewCell{
     }
     
     func configureData(data: SearchResult){
+        let liksetText = data.likes.formatted(.number)
         self.itemImageView.kf.setImage(with: URL(string: data.urls.thumb))
-        self.starButton.setTitle("\(data.likes)", for: .normal)
-        self.starButton.setTitle("\(data.likes)", for: .highlighted)
+        self.starButton.setTitle(liksetText, for: .normal)
+        self.starButton.setTitle(liksetText, for: .highlighted)
     }
 }
