@@ -16,12 +16,15 @@ struct SearchResponse: Decodable{
 
 struct SearchResult: Decodable{
     let id: String
+    let width: Int
+    let height: Int
     let urls: SearchURLS
     let likes: Int
 }
 
 struct SearchURLS: Decodable{
     let thumb: String
+    let small: String
 }
 
 enum SortState: String{
@@ -193,6 +196,12 @@ extension SearchPhotoViewController: UICollectionViewDelegate, UICollectionViewD
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let nextVC = DetailViewController()
+        nextVC.item = self.SearchData[indexPath.item]
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
 }
 
 extension SearchPhotoViewController: UICollectionViewDataSourcePrefetching{
@@ -211,6 +220,4 @@ extension SearchPhotoViewController: UICollectionViewDataSourcePrefetching{
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
         
     }
-    
-    
 }
