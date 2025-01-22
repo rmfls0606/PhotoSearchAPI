@@ -13,7 +13,7 @@ class HorizontalScrollView: UIView{
     
     private lazy var topicTitle: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 14)
+        label.font = .boldSystemFont(ofSize: 20)
         return label
     }()
     
@@ -58,7 +58,7 @@ class HorizontalScrollView: UIView{
 //            make.leading.equalToSuperview().offset(12)
 //            make.trailing.equalToSuperview().offset(-12)
 //            make.height.equalTo(200)
-            make.top.equalTo(topicTitle.snp.bottom)
+            make.top.equalTo(topicTitle.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview()
         }
         

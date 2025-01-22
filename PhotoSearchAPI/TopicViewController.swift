@@ -39,7 +39,7 @@ class TopicViewController: UIViewController {
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
-        view.spacing = 20
+        view.spacing = 50
         view.alignment = .fill
         return view
     }()
