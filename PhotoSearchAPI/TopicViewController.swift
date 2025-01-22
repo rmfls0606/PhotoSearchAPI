@@ -66,9 +66,9 @@ class TopicViewController: UIViewController {
         
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
-            make.leading.equalToSuperview()
-            make.leading.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(12)
+            make.trailing.equalToSuperview().offset(-12)
         }
         
         stackView.snp.makeConstraints { make in
