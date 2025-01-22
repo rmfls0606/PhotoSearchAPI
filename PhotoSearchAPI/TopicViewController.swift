@@ -18,7 +18,7 @@ struct TopicURLs: Decodable{
 }
 
 
-class TopicViewController: UIViewController {
+final class TopicViewController: UIViewController {
     
     private var data = [TopicResponse]()
     

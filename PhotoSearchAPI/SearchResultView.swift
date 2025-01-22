@@ -8,18 +8,17 @@
 import UIKit
 import SnapKit
 
-class SearchResultView: BaseView{
+final class SearchResultView: BaseView{
     private(set) lazy var collectionView = createCollectionView()
     
-    func createCollectionView() -> UICollectionView{
+    private func createCollectionView() -> UICollectionView{
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.register(SearchResultCollectionView.self, forCellWithReuseIdentifier: SearchResultCollectionView.identifier)
         collectionView.collectionViewLayout = createCollectionViewLayout()
         return collectionView
     }
     
-    func createCollectionViewLayout() -> UICollectionViewLayout{
-        
+    private func createCollectionViewLayout() -> UICollectionViewLayout{
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 5.0
         layout.minimumInteritemSpacing = 5.0

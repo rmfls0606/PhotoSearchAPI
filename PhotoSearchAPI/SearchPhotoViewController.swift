@@ -41,7 +41,7 @@ enum SortState: String{
     }
 }
 
-class SearchPhotoViewController: UIViewController{
+final class SearchPhotoViewController: UIViewController{
 
     private var SearchData = [SearchResult]()
     private var query = ""
