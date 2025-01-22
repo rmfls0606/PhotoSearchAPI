@@ -78,9 +78,9 @@ class TopicViewController: UIViewController {
         
     }
     
-    private func addHorizontalScrollView(){
+    private func addHorizontalScrollView(title: String){
         
-        let horizontalScrollView = HorizontalScrollView(title: "골든 아워", images: data.map{$0.urls.small})
+        let horizontalScrollView = HorizontalScrollView(title: title, images: data.map{$0.urls.small})
         stackView.addArrangedSubview(horizontalScrollView)
         
         horizontalScrollView.snp.makeConstraints { make in
@@ -102,7 +102,13 @@ class TopicViewController: UIViewController {
             switch result {
             case .success(let success):
                 self.data = success
-                self.addHorizontalScrollView()
+                if topicId == "golden-hour"{
+                    self.addHorizontalScrollView(title: "골든 아워")
+                }else if topicId == "business-work"{
+                    self.addHorizontalScrollView(title: "비즈니스 및 업무")
+                }else{
+                    self.addHorizontalScrollView(title: "건축 및 인테리어")
+                }
             case .failure(let failure):
                 fatalError(failure.localizedDescription)
             }
