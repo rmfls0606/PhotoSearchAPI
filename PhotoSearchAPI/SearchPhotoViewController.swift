@@ -121,7 +121,8 @@ class SearchPhotoViewController: UIViewController{
     
     
     private func callRequest(query: String, page: Int, sort: SortState){
-        NetworkManager.shared.callRequest(api: .searchPhotos(query: query, page: page, sort: sort)) { (response: SearchResponse) in
+        NetworkManager.shared.callRequest(api: .searchPhotos(query: query, page: page, sort: sort)) { (response: SearchResponse, statusCode: Int) in
+            
             if self.page <= 1{
                 self.SearchData = response.results
             }else{
@@ -130,8 +131,10 @@ class SearchPhotoViewController: UIViewController{
             
             self.isEnd = page >= response.total_pages
             self.searchResult.reloadData()
-        } failHandler: { error in
-            print(error.localizedDescription)
+            
+            self.showAlert(statusCode: statusCode)
+        } failHandler: { [weak self] statusCode in
+            self?.showAlert(statusCode: statusCode)
         }
     }
     

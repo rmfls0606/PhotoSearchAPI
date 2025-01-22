@@ -90,7 +90,7 @@ class TopicViewController: UIViewController {
     }
     
     private func callRequest( topicId: String){
-        NetworkManager.shared.callRequest(api: .topicPhotos(topicId: topicId)) { (response: [TopicResponse]) in
+        NetworkManager.shared.callRequest(api: .topicPhotos(topicId: topicId)) { (response: [TopicResponse], statusCode: Int) in
             self.data = response
             if topicId == "golden-hour"{
                 self.addHorizontalScrollView(title: "골든 아워")
@@ -99,9 +99,9 @@ class TopicViewController: UIViewController {
             }else{
                 self.addHorizontalScrollView(title: "건축 및 인테리어")
             }
-            
-        } failHandler: { error in
-            print(error.localizedDescription)
+            self.showAlert(statusCode: statusCode)
+        } failHandler: { [weak self] statusCode in
+            self?.showAlert(statusCode: statusCode)
         }
         
     }

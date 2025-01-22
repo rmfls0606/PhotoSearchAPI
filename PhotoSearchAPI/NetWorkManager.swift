@@ -53,19 +53,22 @@ class NetworkManager{
     
     private init() {}
     
-    func callRequest<T: Decodable>(api: UnplashRequest, succesHandler: @escaping (T) -> Void, failHandler: @escaping (Error) -> Void){
+    func callRequest<T: Decodable>(api: UnplashRequest, succesHandler: @escaping (T, Int) -> Void, failHandler: @escaping (Int) -> Void){
         AF.request(api.endpoint,
                    method: api.method,
                    parameters: api.parameter)
-            .validate(statusCode: 200..<500)
+            .validate(statusCode: 200..<600)
             .responseDecodable(of: T.self){ response in
-                switch response.result{
-                case .success(let value):
-                    succesHandler(value)
-                case .failure(let error):
-                    failHandler(error)
+                if let statusCode = response.response?.statusCode{
+                    switch response.result{
+                    case .success(let value):
+                        succesHandler(value, statusCode)
+                    case .failure:
+                        failHandler(statusCode)
+                    }
+                }else{
+                    failHandler(0)
                 }
-                
             }
     }
 }

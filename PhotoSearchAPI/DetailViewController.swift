@@ -119,12 +119,13 @@ class DetailViewController: UIViewController {
     }
     
     private func callRequest(id: String){
-        NetworkManager.shared.callRequest(api: .photoStatistics(id: item!.id)) { (response: StatisticsResponse) in
+        NetworkManager.shared.callRequest(api: .photoStatistics(id: item!.id)) { (response: StatisticsResponse, statusCode: Int) in
             self.statisticsData = response
             self.viewsValueLabel.text = response.views.total.formatted(.number)
             self.downloadsValueLabel.text = response.downloads.total.formatted(.number)
-        } failHandler: { error in
-            print(error.localizedDescription)
+            self.showAlert(statusCode: statusCode)
+        } failHandler: { [weak self] statusCode in
+            self?.showAlert(statusCode: statusCode)
         }
 
     }
