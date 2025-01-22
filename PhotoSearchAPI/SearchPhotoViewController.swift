@@ -118,34 +118,21 @@ class SearchPhotoViewController: UIViewController{
         searchResult.configureDelegate(delegate: self, dataSource: self, prefetchDataSource: self)
     }
     
-    private func callRequest(query: String, page: Int){
-        let url = "https://api.unsplash.com/search/photos?"
-        let parameters: [String: Any] = [
-            "query": query,
-            "per_page": "20",
-            "page": page,
-            "order_by": self.sortState.rawValue,
-            "client_id": ApiKey.client_ID
-        ]
-        
-        NetworkManager.shared.loadData(url: url,
-                                       method: .get,
-                                       parameters: parameters) { (result: Result<SearchResponse, Error>) in
-            switch result{
-            case .success(let data):
-                if self.page == 1{
-                    self.SearchData = data.results
-                }else{
-                    self.SearchData.append(contentsOf: data.results)
-                }
-                self.isEnd = page >= data.total_pages
-                
-                self.searchResult.reloadData()
-            case .failure(let error):
-                fatalError(error.localizedDescription)
+    
+    
+    private func callRequest(query: String, page: Int, sort: SortState){
+        NetworkManager.shared.callRequest(api: .searchPhotos(query: query, page: page, sort: sort)) { (response: SearchResponse) in
+            if self.page <= 1{
+                self.SearchData = response.results
+            }else{
+                self.SearchData.append(contentsOf: response.results)
             }
+            
+            self.isEnd = page >= response.total_pages
+            self.searchResult.reloadData()
+        } failHandler: { error in
+            print(error.localizedDescription)
         }
-        
     }
     
     @objc
@@ -155,7 +142,7 @@ class SearchPhotoViewController: UIViewController{
         let text = self.sortState == .sortByLatest ? "최신순" : "관련순"
         self.toggleButton.setTitle(text, for: .normal)
         self.toggleButton.setTitle(text, for: .highlighted)
-        callRequest(query: query, page: 1)
+        callRequest(query: query, page: 1, sort: sortState)
     }
 }
 
@@ -168,7 +155,7 @@ extension SearchPhotoViewController: UISearchBarDelegate{
         }
         self.query = query
         self.page = 1
-        callRequest(query: query, page: 1)
+        callRequest(query: query, page: 1, sort: sortState)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -211,7 +198,7 @@ extension SearchPhotoViewController: UICollectionViewDataSourcePrefetching{
         for item in indexPaths{
             if SearchData.count - 5 <= item.item{
                 self.page += 1
-                callRequest(query: query, page: self.page)
+                callRequest(query: query, page: self.page, sort: sortState)
                 break
             }
         }

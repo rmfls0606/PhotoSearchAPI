@@ -86,32 +86,23 @@ class TopicViewController: UIViewController {
         horizontalScrollView.snp.makeConstraints { make in
             make.height.equalTo(250)
         }
- 
+        
     }
     
-    private func callRequest(topicId: String){
-        let url = "https://api.unsplash.com/topics/\(topicId)/photos?"
-        
-        let parameters: [String: Any] = [
-            "client_id": ApiKey.client_ID
-        ]
-        
-        NetworkManager.shared.loadData(url: url,
-                                       method: .get,
-                                       parameters: parameters) { (result: Result<[TopicResponse], Error>) in
-            switch result {
-            case .success(let success):
-                self.data = success
-                if topicId == "golden-hour"{
-                    self.addHorizontalScrollView(title: "골든 아워")
-                }else if topicId == "business-work"{
-                    self.addHorizontalScrollView(title: "비즈니스 및 업무")
-                }else{
-                    self.addHorizontalScrollView(title: "건축 및 인테리어")
-                }
-            case .failure(let failure):
-                fatalError(failure.localizedDescription)
+    private func callRequest( topicId: String){
+        NetworkManager.shared.callRequest(api: .topicPhotos(topicId: topicId)) { (response: [TopicResponse]) in
+            self.data = response
+            if topicId == "golden-hour"{
+                self.addHorizontalScrollView(title: "골든 아워")
+            }else if topicId == "business-work"{
+                self.addHorizontalScrollView(title: "비즈니스 및 업무")
+            }else{
+                self.addHorizontalScrollView(title: "건축 및 인테리어")
             }
+            
+        } failHandler: { error in
+            print(error.localizedDescription)
         }
+        
     }
 }
